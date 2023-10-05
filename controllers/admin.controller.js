@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const Admin = require("../models/Admin");
 
+const JWT_SECRET_KEY = "secret123";
+
 
 module.exports.createAdmin = async (req, res) => {
   try {
@@ -23,7 +25,7 @@ module.exports.createAdmin = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = jwt.sign({ email: newAdmin.email, id: newAdmin._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({ email: newAdmin.email, id: newAdmin._id }, JWT_SECRET_KEY);
     return res.status(201).json({ message: 'Admin created successfully', admin: newAdmin, token });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error', error: error.message });
@@ -51,7 +53,7 @@ module.exports.adminLogin = async (req, res) => {
     }
 
     // Generate a JWT token
-    const token = jwt.sign({ adminId: admin._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ adminId: admin._id }, JWT_SECRET_KEY, { expiresIn: '1h' });
 
     // Return the token to the client
     return res.status(200).json({ message: 'Login successful', admin, token });

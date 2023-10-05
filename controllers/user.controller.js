@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const Users = require("../models/Users");
 const GoogleUsers = require("../models/GoogleUsers");
 
+const JWT_SECRET_KEY = "secret123";
+
 module.exports.allUsers = async (req, res) => {
   try {
     const users = await Users.find();
@@ -52,7 +54,7 @@ module.exports.register = async (req, res, next) => {
         console.log(newUser.createdAt);
         const token = jwt.sign(
           { email: newUser.email, id: newUser._id },
-          process.env.JWT_SECRET_KEY
+          JWT_SECRET_KEY
         );
         return res.status(200).json({ newUser, token });
       }
@@ -91,7 +93,7 @@ module.exports.login = async (req, res) => {
       if (isPasswordValid) {
         const token = jwt.sign(
           { email: existingUser.email, id: existingUser._id },
-          process.env.JWT_SECRET_KEY
+          JWT_SECRET_KEY
         );
         return res.status(200).json({
           _id: existingUser._id,
